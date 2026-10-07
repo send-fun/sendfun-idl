@@ -303,6 +303,10 @@
               }
             }
           }
+        },
+        {
+          "name": "allowed_creator_fee_modes",
+          "type": "u16"
         }
       ]
     },
@@ -1895,165 +1899,6 @@
       ]
     },
     {
-      "name": "on_token_created",
-      "discriminator": [
-        24,
-        66,
-        227,
-        127,
-        168,
-        71,
-        21,
-        235
-      ],
-      "accounts": [
-        {
-          "name": "caller",
-          "signer": true
-        },
-        {
-          "name": "global_config",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  103,
-                  108,
-                  111,
-                  98,
-                  97,
-                  108,
-                  95,
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "staking_config",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  115,
-                  116,
-                  97,
-                  107,
-                  105,
-                  110,
-                  103,
-                  95,
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "quote_mint"
-        },
-        {
-          "name": "reward_state",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  114,
-                  101,
-                  119,
-                  97,
-                  114,
-                  100
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "staking_config"
-              },
-              {
-                "kind": "account",
-                "path": "quote_mint"
-              }
-            ]
-          }
-        },
-        {
-          "name": "creator_fee_config",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  99,
-                  114,
-                  101,
-                  97,
-                  116,
-                  111,
-                  114,
-                  95,
-                  102,
-                  101,
-                  101,
-                  95,
-                  98,
-                  97,
-                  108,
-                  97,
-                  110,
-                  99,
-                  101
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.creator_hash"
-              },
-              {
-                "kind": "account",
-                "path": "quote_mint"
-              }
-            ]
-          }
-        },
-        {
-          "name": "payer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "args",
-          "type": {
-            "defined": {
-              "name": "OnTokenCreatedArgs"
-            }
-          }
-        }
-      ]
-    },
-    {
       "name": "set_alt_address",
       "discriminator": [
         138,
@@ -3507,6 +3352,12 @@
               }
             }
           }
+        },
+        {
+          "name": "allowed_creator_fee_modes",
+          "type": {
+            "option": "u16"
+          }
         }
       ]
     },
@@ -3649,19 +3500,6 @@
         8,
         59,
         74
-      ]
-    },
-    {
-      "name": "CreatorFeeConfig",
-      "discriminator": [
-        160,
-        88,
-        34,
-        74,
-        215,
-        196,
-        130,
-        32
       ]
     },
     {
@@ -4023,8 +3861,8 @@
     },
     {
       "code": 7012,
-      "name": "InvalidCreatorId",
-      "msg": "Creator identity is not a decodable wallet address"
+      "name": "Unused7012",
+      "msg": "Unused"
     },
     {
       "code": 7013,
@@ -4035,6 +3873,16 @@
       "code": 7014,
       "name": "TransferFeeNotSettleable",
       "msg": "Token-2022 transfer fee schedule cannot settle the exact amount"
+    },
+    {
+      "code": 7015,
+      "name": "CreatorFeeTooHigh",
+      "msg": "Creator fee exceeds the partner's maximum"
+    },
+    {
+      "code": 7016,
+      "name": "CreatorFeeModeNotAllowed",
+      "msg": "Creator fee mode is not allowed by the partner config"
     },
     {
       "code": 7100,
@@ -4099,23 +3947,6 @@
       }
     },
     {
-      "name": "CallerType",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "PlatformBondingCurve"
-          },
-          {
-            "name": "PlatformPool"
-          }
-        ]
-      },
-      "repr": {
-        "kind": "rust"
-      }
-    },
-    {
       "name": "ClaimEvent",
       "type": {
         "kind": "struct",
@@ -4144,54 +3975,12 @@
       }
     },
     {
-      "name": "CreatorFeeConfig",
+      "name": "DexFees",
       "serialization": "bytemuck",
       "repr": {
         "kind": "c",
         "packed": true
       },
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "version",
-            "type": "u8"
-          },
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "platform_index",
-            "type": "u8"
-          },
-          {
-            "name": "platform_id",
-            "type": {
-              "array": [
-                "u8",
-                44
-              ]
-            }
-          },
-          {
-            "name": "quote_mint",
-            "type": "pubkey"
-          },
-          {
-            "name": "_reserved",
-            "type": {
-              "array": [
-                "u8",
-                64
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "name": "DexFees",
       "type": {
         "kind": "struct",
         "fields": [
@@ -4208,7 +3997,7 @@
             "type": "u16"
           },
           {
-            "name": "creator_fee_bps",
+            "name": "max_creator_fee_bps",
             "type": "u16"
           },
           {
@@ -4220,11 +4009,6 @@
             "type": "u16"
           }
         ]
-      },
-      "serialization": "bytemuck",
-      "repr": {
-        "kind": "c",
-        "packed": true
       }
     },
     {
@@ -4310,7 +4094,7 @@
             "type": {
               "array": [
                 "u8",
-                32
+                64
               ]
             }
           }
@@ -4362,6 +4146,11 @@
     },
     {
       "name": "LaunchpadFees",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c",
+        "packed": true
+      },
       "type": {
         "kind": "struct",
         "fields": [
@@ -4374,7 +4163,7 @@
             "type": "u16"
           },
           {
-            "name": "creator_fee_bps",
+            "name": "max_creator_fee_bps",
             "type": "u16"
           },
           {
@@ -4384,51 +4173,6 @@
           {
             "name": "fee_decay_start_bps",
             "type": "u16"
-          }
-        ]
-      },
-      "serialization": "bytemuck",
-      "repr": {
-        "kind": "c",
-        "packed": true
-      }
-    },
-    {
-      "name": "OnTokenCreatedArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "caller_type",
-            "type": {
-              "defined": {
-                "name": "CallerType"
-              }
-            }
-          },
-          {
-            "name": "caller_bump",
-            "type": "u8"
-          },
-          {
-            "name": "base_mint",
-            "type": "pubkey"
-          },
-          {
-            "name": "creator_platform",
-            "type": "string"
-          },
-          {
-            "name": "creator_id",
-            "type": "string"
-          },
-          {
-            "name": "creator_hash",
-            "type": "pubkey"
-          },
-          {
-            "name": "creation_fee",
-            "type": "u64"
           }
         ]
       }
@@ -4484,11 +4228,15 @@
             "type": "pubkey"
           },
           {
+            "name": "allowed_creator_fee_modes",
+            "type": "u16"
+          },
+          {
             "name": "_reserved",
             "type": {
               "array": [
                 "u8",
-                32
+                256
               ]
             }
           }
@@ -4763,7 +4511,7 @@
             "type": {
               "array": [
                 "u8",
-                32
+                64
               ]
             }
           }
@@ -4813,7 +4561,7 @@
             "type": {
               "array": [
                 "u8",
-                32
+                128
               ]
             }
           }

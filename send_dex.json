@@ -892,9 +892,42 @@
         },
         {
           "name": "creator_fee_config",
-          "relations": [
-            "pool"
-          ]
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  114,
+                  101,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  102,
+                  101,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "base_mint"
+              },
+              {
+                "kind": "account",
+                "path": "quote_mint"
+              }
+            ]
+          }
         },
         {
           "name": "nexus_global_config",
@@ -1884,7 +1917,43 @@
           "address": "7rrCurqdWFesbzwtYPo95fM8waTtVXgXwCom45x1sfNX"
         },
         {
-          "name": "creator_fee_config"
+          "name": "creator_fee_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  114,
+                  101,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  102,
+                  101,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "base_mint"
+              },
+              {
+                "kind": "account",
+                "path": "quote_mint"
+              }
+            ]
+          }
         },
         {
           "name": "event_authority",
@@ -2648,61 +2717,23 @@
                   101,
                   101,
                   95,
-                  98,
-                  97,
-                  108,
-                  97,
-                  110,
                   99,
-                  101
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
                 ]
               },
               {
-                "kind": "arg",
-                "path": "args.creator_hash"
+                "kind": "account",
+                "path": "base_mint"
               },
               {
                 "kind": "account",
                 "path": "quote_mint"
               }
-            ],
-            "program": {
-              "kind": "const",
-              "value": [
-                101,
-                235,
-                55,
-                199,
-                167,
-                25,
-                236,
-                156,
-                170,
-                69,
-                89,
-                69,
-                74,
-                1,
-                155,
-                226,
-                23,
-                251,
-                230,
-                85,
-                205,
-                76,
-                183,
-                206,
-                157,
-                59,
-                159,
-                68,
-                24,
-                69,
-                197,
-                232
-              ]
-            }
+            ]
           }
         },
         {
@@ -4420,8 +4451,8 @@
     },
     {
       "code": 6011,
-      "name": "InvalidCreatorHash",
-      "msg": "creator_hash does not match (creator_platform, creator_id)"
+      "name": "InvalidCoinCreator",
+      "msg": "Invalid coin creator"
     },
     {
       "code": 6012,
@@ -4490,8 +4521,8 @@
     },
     {
       "code": 7012,
-      "name": "InvalidCreatorId",
-      "msg": "Creator identity is not a decodable wallet address"
+      "name": "Unused7012",
+      "msg": "Unused"
     },
     {
       "code": 7013,
@@ -4502,6 +4533,16 @@
       "code": 7014,
       "name": "TransferFeeNotSettleable",
       "msg": "Token-2022 transfer fee schedule cannot settle the exact amount"
+    },
+    {
+      "code": 7015,
+      "name": "CreatorFeeTooHigh",
+      "msg": "Creator fee exceeds the partner's maximum"
+    },
+    {
+      "code": 7016,
+      "name": "CreatorFeeModeNotAllowed",
+      "msg": "Creator fee mode is not allowed by the partner config"
     },
     {
       "code": 7100,
@@ -4539,6 +4580,14 @@
           {
             "name": "platform_config",
             "type": "pubkey"
+          },
+          {
+            "name": "creator_fee_mode",
+            "type": "u8"
+          },
+          {
+            "name": "creator_fee_bps",
+            "type": "u16"
           }
         ]
       }
@@ -4557,18 +4606,6 @@
             "type": "u64"
           },
           {
-            "name": "creator_platform",
-            "type": "string"
-          },
-          {
-            "name": "creator_id",
-            "type": "string"
-          },
-          {
-            "name": "creator_hash",
-            "type": "pubkey"
-          },
-          {
             "name": "name",
             "type": "string"
           },
@@ -4579,6 +4616,18 @@
           {
             "name": "uri",
             "type": "string"
+          },
+          {
+            "name": "creator_fee_mode",
+            "type": "u8"
+          },
+          {
+            "name": "creator_fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "coin_creator",
+            "type": "pubkey"
           }
         ]
       }
@@ -4609,8 +4658,13 @@
             "type": "pubkey"
           },
           {
-            "name": "creator_fee_config",
-            "type": "pubkey"
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
           },
           {
             "name": "claimer",
@@ -4759,8 +4813,13 @@
             "type": "pubkey"
           },
           {
-            "name": "creator_fee_config",
-            "type": "pubkey"
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
           },
           {
             "name": "base_vault",
@@ -4807,11 +4866,19 @@
             "type": "pubkey"
           },
           {
+            "name": "creator_fee_mode",
+            "type": "u8"
+          },
+          {
+            "name": "creator_fee_bps",
+            "type": "u16"
+          },
+          {
             "name": "_reserved",
             "type": {
               "array": [
                 "u8",
-                64
+                256
               ]
             }
           }
@@ -4848,8 +4915,13 @@
             "type": "pubkey"
           },
           {
-            "name": "creator_fee_config",
-            "type": "pubkey"
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
           },
           {
             "name": "platform_config",
@@ -4882,6 +4954,14 @@
           {
             "name": "timestamp",
             "type": "i64"
+          },
+          {
+            "name": "creator_fee_mode",
+            "type": "u8"
+          },
+          {
+            "name": "creator_fee_bps",
+            "type": "u16"
           }
         ]
       }
@@ -5018,16 +5098,13 @@
             "type": "pubkey"
           },
           {
-            "name": "creator_platform",
-            "type": "string"
-          },
-          {
-            "name": "creator_id",
-            "type": "string"
-          },
-          {
-            "name": "creator_fee_config",
-            "type": "pubkey"
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u64",
+                5
+              ]
+            }
           },
           {
             "name": "platform_config",
@@ -5068,6 +5145,14 @@
           {
             "name": "timestamp",
             "type": "i64"
+          },
+          {
+            "name": "creator_fee_mode",
+            "type": "u8"
+          },
+          {
+            "name": "creator_fee_bps",
+            "type": "u16"
           }
         ]
       }
@@ -5115,8 +5200,13 @@
             "type": "pubkey"
           },
           {
-            "name": "creator_fee_config",
-            "type": "pubkey"
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
           },
           {
             "name": "platform_config",
@@ -5181,6 +5271,14 @@
           {
             "name": "timestamp",
             "type": "i64"
+          },
+          {
+            "name": "creator_fee_mode",
+            "type": "u8"
+          },
+          {
+            "name": "creator_fee_bps",
+            "type": "u16"
           }
         ]
       }
